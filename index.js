@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 app.use("/", require("./routes"))
 app.use("/animal", require("./routes/animal"))
 app.use("/user", require("./routes/user"))
+app.use("/validate", require("./routes/validate"))
 
 connect(() => {
     app.listen(PORT, () => {
