@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 app.use("/", require("./routes"))
 app.use("/animal", require("./routes/animal"))
 app.use("/user", require("./routes/user"))
+app.use("/todo", require("./routes/todo"))
 app.use("/validate", require("./routes/validate"))
 
 connect(() => {

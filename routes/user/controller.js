@@ -64,5 +64,19 @@ module.exports = {
             .catch(error => {
                 console.log(error)
             })
+    },
+    
+    login: (req, res) => {
+        const { body } = req;
+        get()
+            .collection("users")
+            .findOne({ email: body.email, password: body.password })
+            .then(response => {
+                const { email, firstName, _id } = response;
+                res.status(200).json({
+                    message: "Login successfull",
+                    data: { _id, email, firstName }
+                });
+            })
     }
 }
