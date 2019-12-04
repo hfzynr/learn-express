@@ -1,5 +1,6 @@
 const { get } = require("../../config")
 const objectId = require('mongodb').ObjectId
+const { hashPassword, comparedPassword } = require('../../helpers')
 
 module.exports = {
     getAll: (req,res) => {
@@ -28,10 +29,12 @@ module.exports = {
             })
     },
 
-    addOne: (req, res) => {
+    addOne: async (req, res) => {
+        const hash = await hashPassword(req.body.password)
+        
         get()
             .collection("users")
-            .insertOne(req.body)
+            .insertOne({ ...req.body, password: hash })
             .then(result => {
                 res
                 .status(201)
@@ -70,13 +73,21 @@ module.exports = {
         const { body } = req;
         get()
             .collection("users")
-            .findOne({ email: body.email, password: body.password })
-            .then(response => {
-                const { email, firstName, _id } = response;
-                res.status(200).json({
-                    message: "Login successfull",
-                    data: { _id, email, firstName }
-                });
+            .findOne({ email: body.email })
+            .then(async response => {
+                
+                const compared = await comparedPassword(                    
+                    body.password,
+                    response.password
+                )
+                
+                if (compared === true) {
+                    const { email , firstName } = response
+                    res.status(200).json({
+                        message: "Login successfull",
+                        data: { email, firstName }
+                    });
+                }
             })
     }
 }

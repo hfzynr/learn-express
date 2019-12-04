@@ -6,6 +6,14 @@ const signin = async ({ email, password }) => {
         const data = await get()
             .collection("user")
             .findOne({ email:email })
+            .then(async result => {
+                const compared = await comparedPassword(
+                    password,
+                    result.password
+                )
+
+                return compared
+            })
         
     if (!email) {
         result.email = "Wajib Isi Email"
