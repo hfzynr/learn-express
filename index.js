@@ -18,21 +18,21 @@ app.use(
     },
     {
         url:"/user/login",
-        methods: ["POST"]
+        methods: ["POST","GET"]
     },
     {
         url: /^\/validate\/[\w]{1,}[\w\-]{1,}/i,
         method: ["POST"]
-    }
+    },
     ]
 }))
 
 app.use((err, req, res, next) => {
-    if (err.name === 'unauthorizedError') {
+    if (err.name === 'UnauthorizedError') {
         return res.status(401).json({
             message : "You are not allow to enter this endpoint"
         })
-    }
+    } return next()
 }
 )
 

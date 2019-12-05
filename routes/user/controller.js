@@ -88,15 +88,13 @@ module.exports = {
                         email,firstName
                     },
                     JWT_SECRET_KEY,{
-                        expiresIn: "30s"
+                        expiresIn: "1h"
                     }
                 )
 
-                console.log(token)
-
                     res.status(200).json({
                         message: "Login successfull",
-                        data: token
+                        token: token
                     });
                 }
             })
