@@ -1,6 +1,7 @@
-const { get } = require("../../config")
+const { get, JWT_SECRET_KEY } = require("../../config")
 const objectId = require('mongodb').ObjectId
 const { hashPassword, comparedPassword } = require('../../helpers')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
     getAll: (req,res) => {
@@ -71,21 +72,31 @@ module.exports = {
     
     login: (req, res) => {
         const { body } = req;
+        
         get()
             .collection("users")
             .findOne({ email: body.email })
             .then(async response => {
-                
-                const compared = await comparedPassword(                    
+                const compared = await comparedPassword(  
                     body.password,
                     response.password
-                )
+                )    
                 
                 if (compared === true) {
                     const { email , firstName } = response
+                    const token = jwt.sign({
+                        email,firstName
+                    },
+                    JWT_SECRET_KEY,{
+                        expiresIn: "30s"
+                    }
+                )
+
+                console.log(token)
+
                     res.status(200).json({
                         message: "Login successfull",
-                        data: { email, firstName }
+                        data: token
                     });
                 }
             })
